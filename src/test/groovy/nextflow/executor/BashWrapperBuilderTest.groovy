@@ -64,7 +64,7 @@ class BashWrapperBuilderTest extends Specification {
         when:
         builder.scratch = 'ram-disk'
         then:
-        builder.getScratchDirectoryCommand() == 'NXF_SCRATCH="$(nxf_mktemp /dev/shm/)"'
+        builder.getScratchDirectoryCommand() == 'NXF_SCRATCH="$(nxf_mktemp /dev/shm)"'
 
     }
 
@@ -159,13 +159,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -192,7 +189,7 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -267,13 +264,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -306,7 +300,7 @@ class BashWrapperBuilderTest extends Specification {
                 ln -s /some/data/sample_2.fq sample_2.fq
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -397,13 +391,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -444,7 +435,7 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -531,13 +522,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -564,7 +552,7 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
                         
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -750,13 +738,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -784,7 +769,7 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -881,13 +866,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -915,7 +897,7 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
                 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -1105,13 +1087,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -1140,7 +1119,7 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -1222,13 +1201,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -1257,7 +1233,7 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -1342,13 +1318,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -1376,7 +1349,7 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -1458,13 +1431,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -1492,7 +1462,7 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -1578,13 +1548,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -1613,7 +1580,7 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -1696,13 +1663,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -1732,7 +1696,7 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -1845,13 +1809,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -1887,7 +1848,7 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -1965,13 +1926,10 @@ class BashWrapperBuilderTest extends Specification {
 
                     nxf_mktemp() {
                         local base=\${1:-/tmp}
+                        if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                         if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                         else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                         fi
-                    }
-
-                    nxf_mkmem() {
-                      if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                     }
 
                     on_exit() {
@@ -2027,15 +1985,12 @@ class BashWrapperBuilderTest extends Specification {
 
                     nxf_mktemp() {
                         local base=\${1:-/tmp}
+                        if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                         if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                         else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                         fi
                     }
 
-                    nxf_mkmem() {
-                      if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
-                    }
-    
                     on_exit() {
                       exit_status=${ret:=$?}
                       printf $exit_status > /my/exit/xxx
@@ -2089,15 +2044,12 @@ class BashWrapperBuilderTest extends Specification {
 
                     nxf_mktemp() {
                         local base=\${1:-/tmp}
+                        if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                         if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                         else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                         fi
                     }
 
-                    nxf_mkmem() {
-                      if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
-                    }
-    
                     on_exit() {
                       exit_status=${ret:=$?}
                       printf $exit_status > /my/exit/xxx
@@ -2164,15 +2116,12 @@ class BashWrapperBuilderTest extends Specification {
 
                     nxf_mktemp() {
                         local base=\${1:-/tmp}
+                        if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                         if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                         else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                         fi
                     }
 
-                    nxf_mkmem() {
-                      if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
-                    }
-    
                     on_exit() {
                       exit_status=\${ret:=\$?}
                       printf \$exit_status > ${folder}/.exitcode
@@ -2220,7 +2169,7 @@ class BashWrapperBuilderTest extends Specification {
                     [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                     set +e
-                    ctmp=\$(nxf_mkmem)
+                    ctmp=\$(nxf_mktemp /dev/shm)
                     cout=\$ctmp/.command.out; mkfifo \$cout
                     cerr=\$ctmp/.command.err; mkfifo \$cerr
                     tee .command.out < \$cout &
@@ -2274,15 +2223,12 @@ class BashWrapperBuilderTest extends Specification {
 
                     nxf_mktemp() {
                         local base=\${1:-/tmp}
+                        if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                         if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                         else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                         fi
                     }
 
-                    nxf_mkmem() {
-                      if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
-                    }
-    
                     on_exit() {
                       exit_status=\${ret:=\$?}
                       printf \$exit_status > ${folder}/.exitcode
@@ -2326,7 +2272,7 @@ class BashWrapperBuilderTest extends Specification {
                     [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                     set +e
-                    ctmp=\$(nxf_mkmem)
+                    ctmp=\$(nxf_mktemp /dev/shm)
                     cout=\$ctmp/.command.out; mkfifo \$cout
                     cerr=\$ctmp/.command.err; mkfifo \$cerr
                     tee .command.out < \$cout &
@@ -2405,13 +2351,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -2440,7 +2383,7 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -2548,13 +2491,10 @@ class BashWrapperBuilderTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -2590,7 +2530,7 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &

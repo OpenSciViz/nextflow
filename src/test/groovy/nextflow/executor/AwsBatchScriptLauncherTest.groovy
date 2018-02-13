@@ -95,13 +95,10 @@ class AwsBatchScriptLauncherTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -152,7 +149,7 @@ class AwsBatchScriptLauncherTest extends Specification {
                 /conda/bin/aws --region eu-west-1 s3 cp --only-show-errors s3:/${folder}/.command.in .command.in
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &
@@ -242,13 +239,10 @@ class AwsBatchScriptLauncherTest extends Specification {
 
                 nxf_mktemp() {
                     local base=\${1:-/tmp}
+                    if [[ \$base == /dev/shm && ! -d \$base ]]; then base=/tmp; fi 
                     if [[ \$(uname) = Darwin ]]; then mktemp -d \$base/nxf.XXXXXXXXXX
                     else TMPDIR="\$base" mktemp -d -t nxf.XXXXXXXXXX
                     fi
-                }
-
-                nxf_mkmem() {
-                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
                 }
 
                 on_exit() {
@@ -297,7 +291,7 @@ class AwsBatchScriptLauncherTest extends Specification {
                 aws s3 cp --only-show-errors s3:/${folder}/.command.in .command.in
 
                 set +e
-                ctmp=\$(nxf_mkmem)
+                ctmp=\$(nxf_mktemp /dev/shm)
                 cout=\$ctmp/.command.out; mkfifo \$cout
                 cerr=\$ctmp/.command.err; mkfifo \$cerr
                 tee .command.out < \$cout &

@@ -99,15 +99,12 @@ class BashWrapperBuilder {
 
         nxf_mktemp() {
             local base=${1:-/tmp}
+            if [[ $base == /dev/shm && ! -d $base ]]; then base=/tmp; fi 
             if [[ $(uname) = Darwin ]]; then mktemp -d $base/nxf.XXXXXXXXXX
             else TMPDIR="$base" mktemp -d -t nxf.XXXXXXXXXX
             fi
         }
         
-        nxf_mkmem() {
-          if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
-        }
-
         on_exit() {
           exit_status=${ret:=$?}
           printf $exit_status __EXIT_FILE__
@@ -289,7 +286,7 @@ class BashWrapperBuilder {
         }
 
         if( scratchStr.toLowerCase() in ['ramdisk','ram-disk']) {
-            return 'NXF_SCRATCH="$(nxf_mktemp /dev/shm/)"'
+            return 'NXF_SCRATCH="$(nxf_mktemp /dev/shm)"'
         }
 
         return "NXF_SCRATCH=\"\$(set +u; nxf_mktemp $scratchStr)\""
@@ -459,7 +456,7 @@ class BashWrapperBuilder {
          */
         wrapper << '' << ENDL
         wrapper << 'set +e' << ENDL  // <-- note: use loose error checking so that ops after the script command are executed in all cases
-        wrapper << 'ctmp=$(nxf_mkmem)' << ENDL
+        wrapper << 'ctmp=$(nxf_mktemp /dev/shm)' << ENDL
         wrapper << 'cout=$ctmp/.command.out; mkfifo $cout' << ENDL
         wrapper << 'cerr=$ctmp/.command.err; mkfifo $cerr' << ENDL
         wrapper << 'tee '<< TaskRun.CMD_OUTFILE <<' < $cout &' << ENDL
