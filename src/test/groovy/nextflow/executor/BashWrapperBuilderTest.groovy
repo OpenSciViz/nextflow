@@ -164,14 +164,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   exit \$exit_status
                 }
 
@@ -189,15 +192,16 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 /bin/bash -ue ${folder}/.command.sh
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2
@@ -268,14 +272,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   rm -rf \$NXF_SCRATCH || true
                   exit \$exit_status
                 }
@@ -299,15 +306,16 @@ class BashWrapperBuilderTest extends Specification {
                 ln -s /some/data/sample_2.fq sample_2.fq
 
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 /bin/bash -ue ${folder}/.command.sh
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2
@@ -394,14 +402,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   rm -rf \$NXF_SCRATCH || true
                   exit \$exit_status
                 }
@@ -433,15 +444,16 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 /bin/bash -ue ${folder}/.command.sh
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2
@@ -524,14 +536,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   exit \$exit_status
                 }
 
@@ -549,15 +564,16 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
                         
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 /bin/bash ${folder}/.command.stub
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2
@@ -739,14 +755,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   rm -rf \$NXF_SCRATCH || true
                   exit \$exit_status
                 }
@@ -765,15 +784,16 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 /bin/bash -ue ${folder}/.command.sh < ${folder}/.command.in
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2
@@ -866,14 +886,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   rm -rf \$NXF_SCRATCH || true
                   exit \$exit_status
                 }
@@ -892,15 +915,16 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
                 
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 /bin/bash ${folder}/.command.stub
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2
@@ -1086,14 +1110,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   sudo docker rm \$NXF_BOXID &>/dev/null || true
                   exit \$exit_status
                 }
@@ -1113,15 +1140,16 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 sudo docker run -i -v ${folder}:${folder} -v "\$PWD":"\$PWD" -w "\$PWD" --entrypoint /bin/bash --name \$NXF_BOXID busybox -c "/bin/bash -ue ${folder}/.command.sh"
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2
@@ -1199,14 +1227,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   docker rm \$NXF_BOXID &>/dev/null || true
                   exit \$exit_status
                 }
@@ -1226,15 +1257,16 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 docker run -i -v \$(nxf_mktemp):/tmp -v ${folder}:${folder} -v "\$PWD":"\$PWD" -w "\$PWD" --entrypoint /bin/bash --name \$NXF_BOXID busybox -c "/bin/bash -ue ${folder}/.command.sh"
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2
@@ -1315,14 +1347,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   exit \$exit_status
                 }
 
@@ -1341,15 +1376,16 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 docker run -i -v \$(nxf_mktemp):/tmp -v ${folder}:${folder} -v "\$PWD":"\$PWD" -w "\$PWD" --entrypoint /bin/bash --name \$NXF_BOXID ubuntu -c "/bin/bash -ue ${folder}/.command.sh"
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2
@@ -1427,14 +1463,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   exit \$exit_status
                 }
 
@@ -1453,15 +1492,16 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 docker run -i -v \$(nxf_mktemp):/tmp -v ${folder}:${folder} -v "\$PWD":"\$PWD" -w "\$PWD" --entrypoint /bin/bash --name \$NXF_BOXID ubuntu -c "/bin/bash -ue ${folder}/.command.sh"
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2
@@ -1543,14 +1583,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   docker rm \$NXF_BOXID &>/dev/null || true
                   exit \$exit_status
                 }
@@ -1570,15 +1613,16 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 docker run -i -v /folder\\ with\\ blanks:/folder\\ with\\ blanks -v ${folder}:${folder} -v "\$PWD":"\$PWD" -w "\$PWD" --entrypoint /bin/bash --name \$NXF_BOXID busybox -c "/bin/bash -ue ${folder}/.command.sh"
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2
@@ -1657,14 +1701,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   (sudo -n true && sudo rm -rf "\$NXF_SCRATCH" || rm -rf "\$NXF_SCRATCH")&>/dev/null || true
                   sudo docker rm \$NXF_BOXID &>/dev/null || true
                   exit \$exit_status
@@ -1685,15 +1732,16 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 sudo docker run -i -v ${folder}:${folder} -v "\$PWD":"\$PWD" -w "\$PWD" --entrypoint /bin/bash --name \$NXF_BOXID busybox -c "/bin/bash -ue ${folder}/.command.sh"
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2
@@ -1802,14 +1850,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   docker rm \$NXF_BOXID &>/dev/null || true
                   exit \$exit_status
                 }
@@ -1836,15 +1887,16 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 /bin/bash -ue ${folder}/.command.sh
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2
@@ -1918,14 +1970,17 @@ class BashWrapperBuilderTest extends Specification {
                         fi
                     }
 
+                    nxf_mkmem() {
+                      if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                    }
+
                     on_exit() {
                       exit_status=${ret:=$?}
                       printf $exit_status > /my/exit/file\\'s
                       set +u
                       [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                       [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                      [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                      [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                      [[ "\$ctmp" ]] && rm -f \$ctmp || true
                       rm -rf $NXF_SCRATCH || true
                       exit $exit_status
                     }
@@ -1977,14 +2032,17 @@ class BashWrapperBuilderTest extends Specification {
                         fi
                     }
 
+                    nxf_mkmem() {
+                      if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                    }
+    
                     on_exit() {
                       exit_status=${ret:=$?}
                       printf $exit_status > /my/exit/xxx
                       set +u
                       [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                       [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                      [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                      [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                      [[ "\$ctmp" ]] && rm -f \$ctmp || true
                       docker rm x &>/dev/null || true
                       exit $exit_status
                     }
@@ -2036,14 +2094,17 @@ class BashWrapperBuilderTest extends Specification {
                         fi
                     }
 
+                    nxf_mkmem() {
+                      if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                    }
+    
                     on_exit() {
                       exit_status=${ret:=$?}
                       printf $exit_status > /my/exit/xxx
                       set +u
                       [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                       [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                      [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                      [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                      [[ "\$ctmp" ]] && rm -f \$ctmp || true
                       (sudo -n true && sudo rm -rf "$NXF_SCRATCH" || rm -rf "$NXF_SCRATCH")&>/dev/null || true
                       docker rm x &>/dev/null || true
                       exit $exit_status
@@ -2108,14 +2169,17 @@ class BashWrapperBuilderTest extends Specification {
                         fi
                     }
 
+                    nxf_mkmem() {
+                      if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                    }
+    
                     on_exit() {
                       exit_status=\${ret:=\$?}
                       printf \$exit_status > ${folder}/.exitcode
                       set +u
                       [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                       [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                      [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                      [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                      [[ "\$ctmp" ]] && rm -f \$ctmp || true
                       exit \$exit_status
                     }
 
@@ -2156,15 +2220,16 @@ class BashWrapperBuilderTest extends Specification {
                     [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                     set +e
-                    COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                    CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                    tee .command.out < "\$COUT" &
+                    ctmp=\$(nxf_mkmem)
+                    cout=\$ctmp/.command.out; mkfifo \$cout
+                    cerr=\$ctmp/.command.err; mkfifo \$cerr
+                    tee .command.out < \$cout &
                     tee1=\$!
-                    tee .command.err < "\$CERR" >&2 &
+                    tee .command.err < \$cerr >&2 &
                     tee2=\$!
                     (
                     /bin/bash -ue ${folder}/.command.sh
-                    ) >"\$COUT" 2>"\$CERR" &
+                    ) >\$cout 2>\$cerr &
                     pid=\$!
                     wait \$pid || ret=\$?
                     wait \$tee1 \$tee2
@@ -2214,14 +2279,17 @@ class BashWrapperBuilderTest extends Specification {
                         fi
                     }
 
+                    nxf_mkmem() {
+                      if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                    }
+    
                     on_exit() {
                       exit_status=\${ret:=\$?}
                       printf \$exit_status > ${folder}/.exitcode
                       set +u
                       [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                       [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                      [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                      [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                      [[ "\$ctmp" ]] && rm -f \$ctmp || true
                       exit \$exit_status
                     }
 
@@ -2258,15 +2326,16 @@ class BashWrapperBuilderTest extends Specification {
                     [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                     set +e
-                    COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                    CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                    tee .command.out < "\$COUT" &
+                    ctmp=\$(nxf_mkmem)
+                    cout=\$ctmp/.command.out; mkfifo \$cout
+                    cerr=\$ctmp/.command.err; mkfifo \$cerr
+                    tee .command.out < \$cout &
                     tee1=\$!
-                    tee .command.err < "\$CERR" >&2 &
+                    tee .command.err < \$cerr >&2 &
                     tee2=\$!
                     (
                     /bin/bash -ue ${folder}/.command.sh
-                    ) >"\$COUT" 2>"\$CERR" &
+                    ) >\$cout 2>\$cerr &
                     pid=\$!
                     wait \$pid || ret=\$?
                     wait \$tee1 \$tee2
@@ -2341,14 +2410,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   exit \$exit_status
                 }
 
@@ -2368,15 +2440,16 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 /bin/bash -ue ${folder}/.command.sh
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2
@@ -2480,14 +2553,17 @@ class BashWrapperBuilderTest extends Specification {
                     fi
                 }
 
+                nxf_mkmem() {
+                  if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+                }
+
                 on_exit() {
                   exit_status=\${ret:=\$?}
                   printf \$exit_status > ${folder}/.exitcode
                   set +u
                   [[ "\$tee1" ]] && kill \$tee1 2>/dev/null
                   [[ "\$tee2" ]] && kill \$tee2 2>/dev/null
-                  [[ "\$COUT" ]] && rm -f "\$COUT" || true
-                  [[ "\$CERR" ]] && rm -f "\$CERR" || true
+                  [[ "\$ctmp" ]] && rm -f \$ctmp || true
                   exit \$exit_status
                 }
 
@@ -2514,16 +2590,17 @@ class BashWrapperBuilderTest extends Specification {
                 [[ \$NXF_SCRATCH ]] && echo "nxf-scratch-dir \$HOSTNAME:\$NXF_SCRATCH" && cd \$NXF_SCRATCH
 
                 set +e
-                COUT=\$PWD/.command.po; mkfifo "\$COUT"
-                CERR=\$PWD/.command.pe; mkfifo "\$CERR"
-                tee .command.out < "\$COUT" &
+                ctmp=\$(nxf_mkmem)
+                cout=\$ctmp/.command.out; mkfifo \$cout
+                cerr=\$ctmp/.command.err; mkfifo \$cerr
+                tee .command.out < \$cout &
                 tee1=\$!
-                tee .command.err < "\$CERR" >&2 &
+                tee .command.err < \$cerr >&2 &
                 tee2=\$!
                 (
                 shifter_pull docker:ubuntu:latest
                 NXF_DEBUG=\${NXF_DEBUG:=0} shifter --image docker:ubuntu:latest /bin/bash -c "eval \$(nxf_taskenv); /bin/bash -ue ${folder}/.command.sh"
-                ) >"\$COUT" 2>"\$CERR" &
+                ) >\$cout 2>\$cerr &
                 pid=\$!
                 wait \$pid || ret=\$?
                 wait \$tee1 \$tee2

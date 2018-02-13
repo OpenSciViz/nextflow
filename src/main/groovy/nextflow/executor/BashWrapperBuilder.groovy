@@ -103,6 +103,10 @@ class BashWrapperBuilder {
             else TMPDIR="$base" mktemp -d -t nxf.XXXXXXXXXX
             fi
         }
+        
+        nxf_mkmem() {
+          if [[ -d /dev/shm ]]; then nxf_mktemp /dev/shm; else nxf_mktemp; fi
+        }
 
         on_exit() {
           exit_status=${ret:=$?}
@@ -110,8 +114,7 @@ class BashWrapperBuilder {
           set +u
           [[ "$tee1" ]] && kill $tee1 2>/dev/null
           [[ "$tee2" ]] && kill $tee2 2>/dev/null
-          [[ "$COUT" ]] && rm -f "$COUT" || true
-          [[ "$CERR" ]] && rm -f "$CERR" || true
+          [[ "$ctmp" ]] && rm -f $ctmp || true
           __EXIT_CMD__
         }
 
@@ -456,17 +459,18 @@ class BashWrapperBuilder {
          */
         wrapper << '' << ENDL
         wrapper << 'set +e' << ENDL  // <-- note: use loose error checking so that ops after the script command are executed in all cases
-        wrapper << 'COUT=$PWD/.command.po; mkfifo "$COUT"' << ENDL
-        wrapper << 'CERR=$PWD/.command.pe; mkfifo "$CERR"' << ENDL
-        wrapper << 'tee '<< TaskRun.CMD_OUTFILE <<' < "$COUT" &' << ENDL
+        wrapper << 'ctmp=$(nxf_mkmem)' << ENDL
+        wrapper << 'cout=$ctmp/.command.out; mkfifo $cout' << ENDL
+        wrapper << 'cerr=$ctmp/.command.err; mkfifo $cerr' << ENDL
+        wrapper << 'tee '<< TaskRun.CMD_OUTFILE <<' < $cout &' << ENDL
         wrapper << 'tee1=$!' << ENDL
-        wrapper << 'tee '<< TaskRun.CMD_ERRFILE <<' < "$CERR" >&2 &' << ENDL
+        wrapper << 'tee '<< TaskRun.CMD_ERRFILE <<' < $cerr >&2 &' << ENDL
         wrapper << 'tee2=$!' << ENDL
         wrapper << '(' << ENDL
 
         wrapper << getLauncherScript(interpreter,envSnippet) << ENDL
 
-        wrapper << ') >"$COUT" 2>"$CERR" &' << ENDL
+        wrapper << ') >$cout 2>$cerr &' << ENDL
         wrapper << 'pid=$!' << ENDL
         wrapper << 'wait $pid || ret=$?' << ENDL
         wrapper << 'wait $tee1 $tee2' << ENDL
